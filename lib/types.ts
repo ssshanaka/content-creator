@@ -1,0 +1,41 @@
+export type VisualTheme = 'mist_rain' | 'analog_grain' | 'starfield_drift' | 'aurora_wave';
+
+export interface GeneratedItem {
+  id: string;
+  quote: string;
+  subtext: string;
+  theme: VisualTheme;
+  colors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+    textGlow: string;
+  };
+  cameraMovement: 'zoom_in' | 'pan_up' | 'drift_right' | 'static';
+  audioMood: string;
+  caption: string;
+  hashtags: string[];
+}
+
+export interface AppState {
+  geminiKey: string;
+  telegramToken: string;
+  telegramChatId: string;
+  audioFiles: File[];
+  queue: GeneratedItem[];
+  selectedTheme: string;
+  isGenerating: boolean;
+  renderProgress: number;
+  renderStatus: string;
+  
+  // Actions
+  setGeminiKey: (key: string) => void;
+  setTelegramToken: (token: string) => void;
+  setTelegramChatId: (id: string) => void;
+  addAudioFiles: (files: File[]) => void;
+  setQueue: (items: GeneratedItem[]) => void;
+  updateQueueItem: (id: string, item: Partial<GeneratedItem>) => void;
+  setSelectedTheme: (theme: string) => void;
+  setIsGenerating: (isGenerating: boolean) => void;
+  setRenderProgress: (progress: number, status: string) => void;
+}
