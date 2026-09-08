@@ -85,10 +85,39 @@ export function QueueManager() {
                 <div className="text-xs font-mono text-neutral-600 bg-neutral-900 px-2 py-1 rounded">
                   {item.id.slice(0, 8)}
                 </div>
-                <button className="flex items-center gap-1.5 text-xs font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-200 px-3 py-1.5 rounded-lg transition-colors border border-neutral-700">
-                  <Play className="w-3.5 h-3.5" />
-                  Preview
-                </button>
+                <div className="flex items-center gap-2">
+                  <button 
+                    onClick={async () => {
+                      const geminiKey = useStore.getState().geminiKey;
+                      if (!geminiKey) return alert("Please enter your Gemini API Key in Configuration.");
+                      
+                      const btn = document.getElementById(\`regen-\${item.id}\`);
+                      if (btn) btn.innerHTML = '<span class="w-3.5 h-3.5 border-2 border-neutral-400 border-t-white rounded-full animate-spin"></span>';
+                      
+                      try {
+                        const { generateCanvasCode } = await import('@/lib/geminiVisuals');
+                        const newCode = await generateCanvasCode(geminiKey, item);
+                        useStore.getState().updateQueueItem(item.id, { canvasCode: newCode });
+                      } catch (e) {
+                        console.error("Failed to regenerate", e);
+                        alert("Failed to regenerate visual.");
+                      } finally {
+                        if (btn) btn.innerHTML = 'Regen Visual';
+                      }
+                    }}
+                    id={\`regen-\${item.id}\`}
+                    className="flex items-center gap-1.5 text-xs font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-3 py-1.5 rounded-lg transition-colors border border-neutral-700"
+                  >
+                    Regen Visual
+                  </button>
+                  <button 
+                    onClick={() => useStore.getState().setPreviewItemId(item.id)}
+                    className="flex items-center gap-1.5 text-xs font-medium bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 px-3 py-1.5 rounded-lg transition-colors border border-blue-900/50"
+                  >
+                    <Play className="w-3.5 h-3.5" />
+                    Preview
+                  </button>
+                </div>
               </div>
             </div>
           ))

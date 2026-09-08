@@ -22,31 +22,57 @@ export class CanvasRenderer {
     this.ctx = context as CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
   }
 
+  private currentCanvasCode?: string;
+  private cachedFunction?: Function;
+  private hasErrored: boolean = false;
+
   public renderFrame(item: GeneratedItem, time: number) {
     // 1. Base clear
     this.ctx.fillStyle = item.colors.primary || '#000000';
     this.ctx.fillRect(0, 0, this.width, this.height);
 
     // 2. Render Animation
-    switch (item.theme) {
-      case 'mist_rain':
-        drawRainGlass(this.ctx, time, item.colors);
-        break;
-      case 'analog_grain':
-        drawRetroVHS(this.ctx, time, item.colors);
-        break;
-      case 'starfield_drift':
-        drawSpaceDust(this.ctx, time, item.colors);
-        break;
-      case 'aurora_wave':
-        drawGradientFog(this.ctx, time, item.colors);
-        break;
-      default:
-        drawGradientFog(this.ctx, time, item.colors);
+    if (item.canvasCode) {
+      if (this.currentCanvasCode !== item.canvasCode) {
+        this.currentCanvasCode = item.canvasCode;
+        this.hasErrored = false;
+        try {
+          this.cachedFunction = new Function('ctx', 'width', 'height', 'timeMs', 'colors', item.canvasCode);
+        } catch (e: any) {
+          console.error('Error compiling generated canvas code:', e);
+          this.hasErrored = true;
+          this.drawError(e.message);
+        }
+      }
+
+      if (!this.hasErrored && this.cachedFunction) {
+        try {
+          this.cachedFunction(this.ctx, this.width, this.height, time, item.colors);
+        } catch (e: any) {
+          console.error('Error executing generated canvas code:', e);
+          this.hasErrored = true;
+          this.drawError(e.message);
+        }
+      } else if (this.hasErrored) {
+          this.drawError("Fix the code to resume rendering.");
+      }
+    } else {
+      // Fallback
+      drawGradientFog(this.ctx as CanvasRenderingContext2D, time, item.colors);
     }
 
     // 3. Render Text
     this.drawText(item);
+  }
+
+  private drawError(message: string) {
+    this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+    this.ctx.fillRect(0, 0, this.width, 150);
+    this.ctx.fillStyle = 'white';
+    this.ctx.font = 'bold 30px sans-serif';
+    this.ctx.textAlign = 'center';
+    this.ctx.textBaseline = 'middle';
+    this.ctx.fillText("Render Error: " + message, this.width / 2, 75);
   }
 
   private drawText(item: GeneratedItem) {

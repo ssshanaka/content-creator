@@ -15,6 +15,7 @@ export interface GeneratedItem {
   audioMood: string;
   caption: string;
   hashtags: string[];
+  canvasCode?: string;
 }
 
 export interface AppState {
@@ -23,6 +24,7 @@ export interface AppState {
   telegramChatId: string;
   audioFiles: File[];
   queue: GeneratedItem[];
+  previewItemId: string | null;
   selectedTheme: string;
   isGenerating: boolean;
   renderProgress: number;
@@ -35,6 +37,7 @@ export interface AppState {
   addAudioFiles: (files: File[]) => void;
   setQueue: (items: GeneratedItem[]) => void;
   updateQueueItem: (id: string, item: Partial<GeneratedItem>) => void;
+  setPreviewItemId: (id: string | null) => void;
   setSelectedTheme: (theme: string) => void;
   setIsGenerating: (isGenerating: boolean) => void;
   setRenderProgress: (progress: number, status: string) => void;

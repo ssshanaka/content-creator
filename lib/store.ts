@@ -10,6 +10,7 @@ export const useStore = create<AppState>()(
       telegramChatId: '',
       audioFiles: [],
       queue: [],
+      previewItemId: null,
       selectedTheme: 'mist_rain',
       isGenerating: false,
       renderProgress: 0,
@@ -24,6 +25,7 @@ export const useStore = create<AppState>()(
         set((state) => ({
           queue: state.queue.map((q) => (q.id === id ? { ...q, ...item } : q)),
         })),
+      setPreviewItemId: (id) => set({ previewItemId: id }),
       setSelectedTheme: (theme) => set({ selectedTheme: theme }),
       setIsGenerating: (isGenerating) => set({ isGenerating }),
       setRenderProgress: (progress, status) => set({ renderProgress: progress, renderStatus: status }),

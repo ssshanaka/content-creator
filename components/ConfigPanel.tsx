@@ -4,8 +4,8 @@ import React, { useCallback } from 'react';
 import { useStore } from '@/lib/store';
 import { UploadCloud, Settings } from 'lucide-react';
 import { VisualTheme } from '@/lib/types';
-
 import { generateBatchContent } from '@/lib/gemini';
+import { generateCanvasCode } from '@/lib/geminiVisuals';
 import { Loader2 } from 'lucide-react';
 
 export function ConfigPanel() {
@@ -18,20 +18,40 @@ export function ConfigPanel() {
     setTelegramChatId,
     selectedTheme,
     setSelectedTheme,
+    audioFiles,
     addAudioFiles,
     setQueue,
   } = useStore();
-
   const [isGeneratingQuotes, setIsGeneratingQuotes] = React.useState(false);
+  const [generationProgress, setGenerationProgress] = React.useState('');
 
   const handleGenerateQuotes = async () => {
     if (!geminiKey) return alert("Please enter a Gemini API Key");
     setIsGeneratingQuotes(true);
+    setGenerationProgress('Generating 20 quotes...');
     try {
       const items = await generateBatchContent(geminiKey, selectedTheme);
       setQueue(items);
+
+      // Now generate the visual code for each quote sequentially to avoid rate limits
+      for (let i = 0; i < items.length; i++) {
+        setGenerationProgress(`Writing visuals ${i + 1}/${items.length}...`);
+        const code = await generateCanvasCode(geminiKey, items[i]);
+        
+        // Update item in the queue
+        items[i].canvasCode = code;
+        useStore.getState().updateQueueItem(items[i].id, { canvasCode: code });
+        
+        // Delay to spread across 2 minutes (approx 6 seconds per call)
+        if (i < items.length - 1) {
+          await new Promise(r => setTimeout(r, 6000));
+        }
+      }
+      
+      setGenerationProgress('');
     } catch (e) {
       alert("Error generating quotes: " + String(e));
+      setGenerationProgress('');
     } finally {
       setIsGeneratingQuotes(false);
     }
@@ -131,9 +151,9 @@ export function ConfigPanel() {
             }}
           />
         </div>
-        {useStore().audioFiles.length > 0 && (
+        {audioFiles.length > 0 && (
           <div className="mt-2 flex flex-col gap-1 max-h-32 overflow-y-auto">
-            {useStore().audioFiles.map((file, i) => (
+            {audioFiles.map((file, i) => (
               <div key={i} className="text-xs text-neutral-300 bg-neutral-800/50 px-2 py-1.5 rounded flex items-center justify-between">
                 <span className="truncate">{file.name}</span>
                 <span className="opacity-50 text-[10px]">{(file.size / 1024 / 1024).toFixed(1)} MB</span>
@@ -149,7 +169,7 @@ export function ConfigPanel() {
         className="mt-2 w-full flex items-center justify-center gap-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-900 disabled:opacity-50 px-4 py-3 rounded-lg transition-colors font-medium shadow-sm"
       >
         {isGeneratingQuotes ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-        {isGeneratingQuotes ? 'Generating...' : 'Generate 20 Quotes'}
+        {isGeneratingQuotes ? (generationProgress || 'Generating...') : 'Generate 20 Quotes'}
       </button>
     </div>
   );
