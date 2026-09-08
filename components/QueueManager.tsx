@@ -91,8 +91,8 @@ export function QueueManager() {
                       const geminiKey = useStore.getState().geminiKey;
                       if (!geminiKey) return alert("Please enter your Gemini API Key in Configuration.");
                       
-                      const btn = document.getElementById(\`regen-\${item.id}\`);
-                      if (btn) btn.innerHTML = '<span class="w-3.5 h-3.5 border-2 border-neutral-400 border-t-white rounded-full animate-spin"></span>';
+                      const btn = document.getElementById(`regen-${item.id}`);
+                      if (btn) btn.innerText = 'Regenerating...';
                       
                       try {
                         const { generateCanvasCode } = await import('@/lib/geminiVisuals');
@@ -102,10 +102,10 @@ export function QueueManager() {
                         console.error("Failed to regenerate", e);
                         alert("Failed to regenerate visual.");
                       } finally {
-                        if (btn) btn.innerHTML = 'Regen Visual';
+                        if (btn) btn.innerText = 'Regen Visual';
                       }
                     }}
-                    id={\`regen-\${item.id}\`}
+                    id={`regen-${item.id}`}
                     className="flex items-center gap-1.5 text-xs font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-3 py-1.5 rounded-lg transition-colors border border-neutral-700"
                   >
                     Regen Visual
