@@ -1,6 +1,7 @@
 import * as Mp4Muxer from 'mp4-muxer';
 
 export interface EncodeVideoOptions {
+  canvas?: HTMLCanvasElement;
   canvasWidth: number;
   canvasHeight: number;
   fps: number;
@@ -10,7 +11,7 @@ export interface EncodeVideoOptions {
 }
 
 export async function encodeVideo(options: EncodeVideoOptions): Promise<Blob> {
-  const { canvasWidth, canvasHeight, fps, durationSeconds, audioBuffer, renderFrame } = options;
+  const { canvas, canvasWidth, canvasHeight, fps, durationSeconds, audioBuffer, renderFrame } = options;
 
   const muxer = new Mp4Muxer.Muxer({
     target: new Mp4Muxer.ArrayBufferTarget(),
@@ -91,10 +92,10 @@ export async function encodeVideo(options: EncodeVideoOptions): Promise<Blob> {
   }
 
   // Handle video encoding
-  const canvas = document.createElement('canvas');
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
-  const ctx = canvas.getContext('2d');
+  const encodeCanvas = canvas || document.createElement('canvas');
+  encodeCanvas.width = canvasWidth;
+  encodeCanvas.height = canvasHeight;
+  const ctx = encodeCanvas.getContext('2d');
   
   if (!ctx) {
     throw new Error('Failed to get 2D context from canvas');
@@ -107,11 +108,14 @@ export async function encodeVideo(options: EncodeVideoOptions): Promise<Blob> {
     renderFrame(ctx, timeMs);
     
     const timestampUs = (i / fps) * 1_000_000;
-    const videoFrame = new VideoFrame(canvas, { timestamp: timestampUs });
+    const videoFrame = new VideoFrame(encodeCanvas, { timestamp: timestampUs });
     
     const keyFrame = i % fps === 0;
-    videoEncoder.encode(videoFrame, { keyFrame });
-    videoFrame.close();
+    try {
+      videoEncoder.encode(videoFrame, { keyFrame });
+    } finally {
+      videoFrame.close();
+    }
   }
 
   await videoEncoder.flush();

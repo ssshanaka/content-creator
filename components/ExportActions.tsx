@@ -31,9 +31,11 @@ export function ExportActions() {
           audioBuffer = await processAudio(file, 10, 1);
         }
 
-        const renderer = new CanvasRenderer(document.createElement('canvas'));
+        const rendererCanvas = document.createElement('canvas');
+        const renderer = new CanvasRenderer(rendererCanvas);
         
         const blob = await encodeVideo({
+          canvas: rendererCanvas,
           canvasWidth: 1080,
           canvasHeight: 1920,
           fps: 30,
