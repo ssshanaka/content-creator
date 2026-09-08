@@ -47,7 +47,52 @@ export class CanvasRenderer {
 
       if (!this.hasErrored && this.cachedFunction) {
         try {
-          this.cachedFunction(this.ctx, this.width, this.height, time, item.colors);
+          // Wrap ctx in a safety proxy to guard against Gemini-generated code
+          // passing NaN/Infinity/negative-radius to canvas API methods.
+          const safeCtx = new Proxy(this.ctx, {
+            get(target, prop) {
+              const val = (target as any)[prop];
+              if (prop === 'createRadialGradient') {
+                return (x0: number, y0: number, r0: number, x1: number, y1: number, r1: number) => {
+                  if (!isFinite(x0) || !isFinite(y0) || !isFinite(r0) ||
+                      !isFinite(x1) || !isFinite(y1) || !isFinite(r1)) {
+                    return { addColorStop: () => {} } as any;
+                  }
+                  return (target as CanvasRenderingContext2D).createRadialGradient(
+                    x0, y0, Math.max(0, r0), x1, y1, Math.max(0, r1)
+                  );
+                };
+              }
+              if (prop === 'createLinearGradient') {
+                return (x0: number, y0: number, x1: number, y1: number) => {
+                  if (!isFinite(x0) || !isFinite(y0) || !isFinite(x1) || !isFinite(y1)) {
+                    return { addColorStop: () => {} } as any;
+                  }
+                  return (target as CanvasRenderingContext2D).createLinearGradient(x0, y0, x1, y1);
+                };
+              }
+              if (prop === 'ellipse') {
+                return (x: number, y: number, rx: number, ry: number, rot: number, start: number, end: number, ccw?: boolean) => {
+                  if (!isFinite(x) || !isFinite(y) || !isFinite(rx) || !isFinite(ry)) return;
+                  (target as CanvasRenderingContext2D).ellipse(
+                    x, y, Math.max(0, rx), Math.max(0, ry), rot || 0, start, end, ccw
+                  );
+                };
+              }
+              if (prop === 'arc') {
+                return (x: number, y: number, r: number, start: number, end: number, ccw?: boolean) => {
+                  if (!isFinite(x) || !isFinite(y) || !isFinite(r) || r < 0) return;
+                  (target as CanvasRenderingContext2D).arc(x, y, r, start, end, ccw);
+                };
+              }
+              return typeof val === 'function' ? val.bind(target) : val;
+            },
+            set(target, prop, value) {
+              (target as any)[prop] = value;
+              return true;
+            }
+          });
+          this.cachedFunction(safeCtx, this.width, this.height, time, item.colors);
         } catch (e: any) {
           console.error('Error executing generated canvas code:', e);
           this.hasErrored = true;

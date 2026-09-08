@@ -33,7 +33,7 @@ export async function encodeVideo(options: EncodeVideoOptions): Promise<Blob> {
   });
 
   videoEncoder.configure({
-    codec: 'avc1.42E01F',
+    codec: 'avc1.640033',
     width: canvasWidth,
     height: canvasHeight,
     bitrate: 5_000_000,
