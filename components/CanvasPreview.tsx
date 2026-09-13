@@ -7,7 +7,7 @@ import { CanvasRenderer } from '@/lib/canvas/renderer';
 
 export function CanvasPreview() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { queue, previewItemId } = useStore();
+  const { queue, previewItemId, audioFiles } = useStore();
   const animationRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
 
@@ -15,7 +15,8 @@ export function CanvasPreview() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const previewItem = queue.find(q => q.id === previewItemId);
+    const index = queue.findIndex(q => q.id === previewItemId);
+    const previewItem = index !== -1 ? queue[index] : undefined;
     
     if (!previewItem) {
       // Draw idle state
@@ -31,13 +32,19 @@ export function CanvasPreview() {
       return;
     }
 
+    let songName: string | undefined = undefined;
+    if (audioFiles.length > 0) {
+      const file = audioFiles[index % audioFiles.length];
+      songName = file.name.replace(/\.[^/.]+$/, "");
+    }
+
     try {
       const renderer = new CanvasRenderer(canvas);
       startTimeRef.current = performance.now();
 
       const renderLoop = (timestamp: number) => {
         const timeMs = timestamp - startTimeRef.current;
-        renderer.renderFrame(previewItem, timeMs);
+        renderer.renderFrame(previewItem, timeMs, songName);
         animationRef.current = requestAnimationFrame(renderLoop);
       };
 
@@ -51,7 +58,7 @@ export function CanvasPreview() {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [previewItemId, queue]);
+  }, [previewItemId, queue, audioFiles]);
 
   return (
     <div className="bg-neutral-900 p-5 rounded-xl border border-neutral-800 flex flex-col gap-4 shadow-sm">
