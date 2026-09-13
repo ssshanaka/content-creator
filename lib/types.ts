@@ -16,6 +16,7 @@ export interface GeneratedItem {
   caption: string;
   hashtags: string[];
   canvasCode?: string;
+  isEditingSettings?: boolean;
 }
 
 export interface AppState {

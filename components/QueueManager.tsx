@@ -46,40 +46,51 @@ export function QueueManager() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] text-neutral-500 uppercase tracking-wider font-semibold flex items-center gap-1.5">
-                    <Palette className="w-3 h-3" />
-                    Theme
-                  </label>
-                  <select
-                    className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 appearance-none"
-                    value={item.theme}
-                    onChange={(e) => updateQueueItem(item.id, { theme: e.target.value as VisualTheme })}
-                  >
-                    {themes.map(t => (
-                      <option key={t} value={t}>{t.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
-                    ))}
-                  </select>
+              {item.isEditingSettings ? (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] text-neutral-500 uppercase tracking-wider font-semibold flex items-center gap-1.5">
+                      <Palette className="w-3 h-3" />
+                      Theme
+                    </label>
+                    <select
+                      className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 appearance-none"
+                      value={item.theme || ""}
+                      onChange={(e) => updateQueueItem(item.id, { theme: e.target.value as VisualTheme })}
+                    >
+                      <option value="" disabled>Edit Theme</option>
+                      {themes.map(t => (
+                        <option key={t} value={t}>{t.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="flex flex-col gap-1.5">
+                    <label className="text-[11px] text-neutral-500 uppercase tracking-wider font-semibold flex items-center gap-1.5">
+                      <Video className="w-3 h-3" />
+                      Camera
+                    </label>
+                    <select
+                      className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 appearance-none"
+                      value={item.cameraMovement || ""}
+                      onChange={(e) => updateQueueItem(item.id, { cameraMovement: e.target.value as any })}
+                    >
+                      <option value="" disabled>SELECT</option>
+                      <option value="zoom_in">Zoom In</option>
+                      <option value="pan_up">Pan Up</option>
+                      <option value="drift_right">Drift Right</option>
+                      <option value="static">Static</option>
+                    </select>
+                  </div>
                 </div>
-                
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[11px] text-neutral-500 uppercase tracking-wider font-semibold flex items-center gap-1.5">
-                    <Video className="w-3 h-3" />
-                    Camera
-                  </label>
-                  <select
-                    className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 appearance-none"
-                    value={item.cameraMovement}
-                    onChange={(e) => updateQueueItem(item.id, { cameraMovement: e.target.value as any })}
-                  >
-                    <option value="zoom_in">Zoom In</option>
-                    <option value="pan_up">Pan Up</option>
-                    <option value="drift_right">Drift Right</option>
-                    <option value="static">Static</option>
-                  </select>
-                </div>
-              </div>
+              ) : (
+                <button
+                  onClick={() => updateQueueItem(item.id, { isEditingSettings: true, theme: "" as any, cameraMovement: "" as any })}
+                  className="text-xs font-medium bg-neutral-900 hover:bg-neutral-800 text-neutral-400 py-2 rounded-lg border border-neutral-800 transition-colors"
+                >
+                  Edit video settings
+                </button>
+              )}
 
               <div className="flex justify-between items-center mt-1 border-t border-neutral-800 pt-3">
                 <div className="text-xs font-mono text-neutral-600 bg-neutral-900 px-2 py-1 rounded">
