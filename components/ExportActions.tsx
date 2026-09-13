@@ -25,10 +25,16 @@ export function ExportActions() {
         useStore.getState().setRenderProgress(Math.round(((i) / queue.length) * 100), `Rendering ${i + 1}/${queue.length}...`);
         
         let audioBuffer;
+        let songName: string | undefined = undefined;
+        // Generate random duration between 5 and 20 seconds
+        const randomDuration = Math.floor(Math.random() * 16) + 5;
+
         // Cycle through audio files if any
         if (audioFiles.length > 0) {
           const file = audioFiles[i % audioFiles.length];
-          audioBuffer = await processAudio(file, 10, 1);
+          audioBuffer = await processAudio(file, randomDuration, 1);
+          // Strip extension
+          songName = file.name.replace(/\.[^/.]+$/, "");
         }
 
         const rendererCanvas = document.createElement('canvas');
@@ -39,10 +45,10 @@ export function ExportActions() {
           canvasWidth: 1080,
           canvasHeight: 1920,
           fps: 30,
-          durationSeconds: 10,
+          durationSeconds: randomDuration,
           audioBuffer,
           renderFrame: (ctx, timeMs) => {
-            renderer.renderFrame(item, timeMs);
+            renderer.renderFrame(item, timeMs, songName);
           }
         });
 
