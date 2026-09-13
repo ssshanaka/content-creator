@@ -31,7 +31,7 @@ export const useStore = create<AppState>()(
       setRenderProgress: (progress, status) => set({ renderProgress: progress, renderStatus: status }),
     }),
     {
-      name: 'lofi-storage',
+      name: 'vibeclips-storage',
       partialize: (state) => ({
         geminiKey: state.geminiKey,
         telegramToken: state.telegramToken,

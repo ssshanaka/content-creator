@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# VibeClips - AI Animated Music Videos
 
-## Getting Started
+**VibeClips** is a free, open-source AI video generator designed for music artists and content creators. It generates 9:16 vertical short-form animated videos, complete with procedurally generated ambient visuals perfectly suited for TikTok, Instagram Reels, and YouTube Shorts. 
 
-First, run the development server:
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fssshanaka%2Fcontent-creator)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🌟 Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **AI-Powered Visuals**: Uses the Gemini API to procedurally generate ambient, lofi, or genre-specific animated backgrounds matching your music.
+- **Batch Processing**: Generate 20+ videos simultaneously in bulk. Just drop your audio files and let it work.
+- **Short-Form Optimized**: Perfect 9:16 aspect ratio (1080x1920) for maximum engagement on modern social platforms.
+- **100% Free & Open Source**: No subscriptions, no hidden limits, and **zero watermarks**. Bring your own Gemini API key.
+- **Telegram Bot Integration**: Optionally connect your Telegram bot to receive generated videos directly on your phone, ready to post.
+- **Browser-Based Engine**: Videos are rendered and encoded entirely on the client side using modern WebCodecs APIs. No heavy server required.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Getting Started
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Prerequisites
 
-## Learn More
+You will need a free [Gemini API Key](https://aistudio.google.com/app/apikey) to generate content.
 
-To learn more about Next.js, take a look at the following resources:
+### Installation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/ssshanaka/content-creator.git vibeclips
+   cd vibeclips
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. Install dependencies:
+   ```bash
+   npm install
+   # or yarn / pnpm / bun
+   ```
 
-## Deploy on Vercel
+3. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **AI Engine**: [Google Generative AI](https://ai.google.dev/) (Gemini Flash Lite)
+- **State Management**: [Zustand](https://zustand-demo.pmnd.rs/)
+- **Video Rendering**: HTML5 Canvas + WebCodecs (`mp4-muxer`)
+
+## 💡 How It Works
+
+1. **Configure**: Enter your Gemini API key and optional Telegram bot credentials.
+2. **Set the Vibe**: Choose your music genre (e.g., Lofi Chill, Rap, Synthwave) and drop in your `.mp3` or `.wav` files.
+3. **Generate**: The AI drafts 20 unique concepts, poetic quotes, and procedural canvas animations.
+4. **Export**: VibeClips renders the video frames in the browser, merges them with your audio, and exports a `.zip` archive or sends them to your Telegram.
+
+## 🤝 Contributing
+
+Contributions, issues, and feature requests are welcome! 
+Feel free to check the [issues page](https://github.com/ssshanaka/content-creator/issues).
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE).
