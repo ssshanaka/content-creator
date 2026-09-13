@@ -16,8 +16,8 @@ export function ConfigPanel() {
     setTelegramToken,
     telegramChatId,
     setTelegramChatId,
-    selectedTheme,
-    setSelectedTheme,
+    contentTopic,
+    setContentTopic,
     audioFiles,
     addAudioFiles,
     setQueue,
@@ -30,7 +30,7 @@ export function ConfigPanel() {
     setIsGeneratingQuotes(true);
     setGenerationProgress('Generating 20 quotes...');
     try {
-      const items = await generateBatchContent(geminiKey, selectedTheme);
+      const items = await generateBatchContent(geminiKey, contentTopic);
       setQueue(items);
 
       // Now generate the visual code for each quote sequentially to avoid rate limits
@@ -72,7 +72,7 @@ export function ConfigPanel() {
     e.preventDefault();
   };
 
-  const themes: VisualTheme[] = ['mist_rain', 'analog_grain', 'starfield_drift', 'aurora_wave'];
+
 
   return (
     <div className="bg-neutral-900 p-5 rounded-xl border border-neutral-800 flex flex-col gap-4 shadow-sm">
@@ -115,16 +115,25 @@ export function ConfigPanel() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label className="text-xs font-medium text-neutral-400">Default Theme</label>
-        <select
-          className="bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2.5 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 transition-colors appearance-none"
-          value={selectedTheme}
-          onChange={(e) => setSelectedTheme(e.target.value as VisualTheme)}
-        >
-          {themes.map(t => (
-            <option key={t} value={t}>{t.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
+        <label className="text-xs font-medium text-neutral-400">Content Topic / Genre</label>
+        <input
+          type="text"
+          className="bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2.5 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 transition-colors"
+          value={contentTopic}
+          onChange={(e) => setContentTopic(e.target.value)}
+          placeholder="e.g. Lofi hip hop, Sad vibes, Cyberpunk..."
+        />
+        <div className="flex flex-wrap gap-2 mt-1">
+          {['Lofi chill', 'Rap', 'Country', 'Pop', 'Dark ambient', 'Synthwave'].map(genre => (
+            <button
+              key={genre}
+              onClick={() => setContentTopic(genre)}
+              className={\`text-[10px] px-2 py-1 rounded-full border \${contentTopic === genre ? 'bg-blue-600/20 border-blue-500 text-blue-400' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}\`}
+            >
+              {genre}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
       <div className="flex flex-col gap-1.5 mt-2">

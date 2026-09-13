@@ -25,7 +25,7 @@ export interface AppState {
   audioFiles: File[];
   queue: GeneratedItem[];
   previewItemId: string | null;
-  selectedTheme: string;
+  contentTopic: string;
   isGenerating: boolean;
   renderProgress: number;
   renderStatus: string;
@@ -38,7 +38,7 @@ export interface AppState {
   setQueue: (items: GeneratedItem[]) => void;
   updateQueueItem: (id: string, item: Partial<GeneratedItem>) => void;
   setPreviewItemId: (id: string | null) => void;
-  setSelectedTheme: (theme: string) => void;
+  setContentTopic: (topic: string) => void;
   setIsGenerating: (isGenerating: boolean) => void;
   setRenderProgress: (progress: number, status: string) => void;
 }

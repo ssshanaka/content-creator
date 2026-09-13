@@ -9,7 +9,7 @@ export async function generateBatchContent(apiKey: string, theme: string): Promi
   });
 
   const prompt = `Generate exactly 20 lofi ambient quotes and metadata. 
-Theme inspiration: ${theme}.
+Niche / Topic / Music Genre inspiration: ${theme}.
 Each item should conform strictly to the following JSON array structure:
 [
   {
