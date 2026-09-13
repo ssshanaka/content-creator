@@ -117,7 +117,7 @@ export class CanvasRenderer {
       this.ctx.textBaseline = 'bottom';
       this.ctx.shadowBlur = 10;
       this.ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      this.ctx.fillText(\`♫ \${songName}\`, this.width / 2, this.height - 80);
+      this.ctx.fillText(`♫ ${songName}`, this.width / 2, this.height - 80);
       this.ctx.shadowBlur = 0;
     }
   }
