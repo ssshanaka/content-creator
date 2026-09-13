@@ -114,10 +114,10 @@ export class CanvasRenderer {
       this.ctx.font = '32px sans-serif';
       this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
       this.ctx.textAlign = 'center';
-      this.ctx.textBaseline = 'bottom';
+      this.ctx.textBaseline = 'top';
       this.ctx.shadowBlur = 10;
       this.ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      this.ctx.fillText(`♫ ${songName}`, this.width / 2, this.height - 80);
+      this.ctx.fillText(`♫ ${songName}`, this.width / 2, 80);
       this.ctx.shadowBlur = 0;
     }
   }
