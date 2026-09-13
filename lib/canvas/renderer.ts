@@ -26,7 +26,7 @@ export class CanvasRenderer {
   private cachedFunction?: Function;
   private hasErrored: boolean = false;
 
-  public renderFrame(item: GeneratedItem, time: number, songName?: string) {
+  public renderFrame(item: GeneratedItem, time: number, artistName?: string, songName?: string) {
     // 1. Base clear
     this.ctx.fillStyle = item.colors.primary || '#000000';
     this.ctx.fillRect(0, 0, this.width, this.height);
@@ -109,15 +109,28 @@ export class CanvasRenderer {
     // 3. Render Text
     this.drawText(item);
 
-    // 4. Render Song Name
-    if (songName) {
-      this.ctx.font = '32px sans-serif';
-      this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    // 4. Render Song and Artist Name
+    if (songName || artistName) {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'top';
       this.ctx.shadowBlur = 10;
       this.ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-      this.ctx.fillText(`♫ ${songName}`, this.width / 2, 80);
+      
+      let currentY = 80;
+
+      if (songName) {
+        this.ctx.font = 'bold 36px sans-serif';
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+        this.ctx.fillText(`♫ ${songName}`, this.width / 2, currentY);
+        currentY += 45;
+      }
+      
+      if (artistName) {
+        this.ctx.font = '30px sans-serif';
+        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        this.ctx.fillText(artistName, this.width / 2, currentY);
+      }
+      
       this.ctx.shadowBlur = 0;
     }
   }

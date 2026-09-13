@@ -30,7 +30,8 @@ export function ConfigPanel() {
     setIsGeneratingQuotes(true);
     setGenerationProgress('Generating 20 quotes...');
     try {
-      const items = await generateBatchContent(geminiKey, contentTopic);
+      const songNames = audioFiles.map(f => f.name.replace(/\.[^/.]+$/, ""));
+      const items = await generateBatchContent(geminiKey, contentTopic, songNames);
       setQueue(items);
 
       // Now generate the visual code for each quote sequentially to avoid rate limits

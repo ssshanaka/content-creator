@@ -32,10 +32,26 @@ export function CanvasPreview() {
       return;
     }
 
+    let artistName: string | undefined = undefined;
     let songName: string | undefined = undefined;
+    let audio: HTMLAudioElement | null = null;
+    let objectUrl: string | null = null;
+
     if (audioFiles.length > 0) {
       const file = audioFiles[index % audioFiles.length];
-      songName = file.name.replace(/\.[^/.]+$/, "");
+      const baseName = file.name.replace(/\.[^/.]+$/, "");
+      if (baseName.includes(' - ')) {
+        const parts = baseName.split(' - ');
+        artistName = parts[0].trim();
+        songName = parts.slice(1).join(' - ').trim();
+      } else {
+        songName = baseName;
+      }
+      
+      objectUrl = URL.createObjectURL(file);
+      audio = new Audio(objectUrl);
+      audio.loop = true;
+      audio.play().catch(e => console.warn('Audio playback prevented by browser policy:', e));
     }
 
     try {
@@ -44,7 +60,7 @@ export function CanvasPreview() {
 
       const renderLoop = (timestamp: number) => {
         const timeMs = timestamp - startTimeRef.current;
-        renderer.renderFrame(previewItem, timeMs, songName);
+        renderer.renderFrame(previewItem, timeMs, artistName, songName);
         animationRef.current = requestAnimationFrame(renderLoop);
       };
 
@@ -56,6 +72,13 @@ export function CanvasPreview() {
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+      }
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+      }
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
       }
     };
   }, [previewItemId, queue, audioFiles]);

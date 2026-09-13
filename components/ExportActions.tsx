@@ -25,6 +25,7 @@ export function ExportActions() {
         useStore.getState().setRenderProgress(Math.round(((i) / queue.length) * 100), `Rendering ${i + 1}/${queue.length}...`);
         
         let audioBuffer;
+        let artistName: string | undefined = undefined;
         let songName: string | undefined = undefined;
         // Generate random duration between 5 and 20 seconds
         const randomDuration = Math.floor(Math.random() * 16) + 5;
@@ -33,8 +34,15 @@ export function ExportActions() {
         if (audioFiles.length > 0) {
           const file = audioFiles[i % audioFiles.length];
           audioBuffer = await processAudio(file, randomDuration, 1);
-          // Strip extension
-          songName = file.name.replace(/\.[^/.]+$/, "");
+          // Parse artist and song name
+          const baseName = file.name.replace(/\.[^/.]+$/, "");
+          if (baseName.includes(' - ')) {
+            const parts = baseName.split(' - ');
+            artistName = parts[0].trim();
+            songName = parts.slice(1).join(' - ').trim();
+          } else {
+            songName = baseName;
+          }
         }
 
         const rendererCanvas = document.createElement('canvas');
@@ -48,7 +56,7 @@ export function ExportActions() {
           durationSeconds: randomDuration,
           audioBuffer,
           renderFrame: (ctx, timeMs) => {
-            renderer.renderFrame(item, timeMs, songName);
+            renderer.renderFrame(item, timeMs, artistName, songName);
           }
         });
 

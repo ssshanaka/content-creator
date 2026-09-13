@@ -1,15 +1,17 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GeneratedItem } from './types';
 
-export async function generateBatchContent(apiKey: string, theme: string): Promise<GeneratedItem[]> {
+export async function generateBatchContent(apiKey: string, theme: string, songNames: string[] = []): Promise<GeneratedItem[]> {
   const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ 
     model: 'gemini-3.5-flash-lite',
     generationConfig: { responseMimeType: "application/json" }
   });
 
+  const songsList = songNames.length > 0 ? `\nAvailable Songs (incorporate their vibes into the subtext if appropriate):\n${songNames.join(', ')}` : '';
+
   const prompt = `Generate exactly 20 lofi ambient quotes and metadata. 
-Niche / Topic / Music Genre inspiration: ${theme}.
+Niche / Topic / Music Genre inspiration: ${theme}.${songsList}
 Each item should conform strictly to the following JSON array structure:
 [
   {
