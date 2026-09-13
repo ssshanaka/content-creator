@@ -4,7 +4,7 @@ export interface GeneratedItem {
   id: string;
   quote: string;
   subtext: string;
-  theme: VisualTheme;
+  theme: string;
   colors: {
     primary: string;
     secondary: string;

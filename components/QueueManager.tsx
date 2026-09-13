@@ -8,7 +8,7 @@ import { VisualTheme } from '@/lib/types';
 export function QueueManager() {
   const { queue, updateQueueItem } = useStore();
 
-  const themes: VisualTheme[] = ['mist_rain', 'analog_grain', 'starfield_drift', 'aurora_wave'];
+
 
   return (
     <div className="bg-neutral-900 p-5 rounded-xl border border-neutral-800 flex flex-col gap-4 shadow-sm h-full max-h-full">
@@ -53,16 +53,13 @@ export function QueueManager() {
                       <Palette className="w-3 h-3" />
                       Theme
                     </label>
-                    <select
-                      className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500 appearance-none"
+                    <input
+                      type="text"
+                      className="bg-neutral-900 border border-neutral-800 rounded-lg px-3 py-2 text-sm text-neutral-200 focus:outline-none focus:border-blue-500"
                       value={item.theme || ""}
-                      onChange={(e) => updateQueueItem(item.id, { theme: e.target.value as VisualTheme })}
-                    >
-                      <option value="" disabled>Edit Theme</option>
-                      {themes.map(t => (
-                        <option key={t} value={t}>{t.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
-                      ))}
-                    </select>
+                      onChange={(e) => updateQueueItem(item.id, { theme: e.target.value })}
+                      placeholder="e.g. Cyberpunk city"
+                    />
                   </div>
                   
                   <div className="flex flex-col gap-1.5">
