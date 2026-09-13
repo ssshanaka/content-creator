@@ -128,7 +128,7 @@ export function ConfigPanel() {
             <button
               key={genre}
               onClick={() => setContentTopic(genre)}
-              className={\`text-[10px] px-2 py-1 rounded-full border \${contentTopic === genre ? 'bg-blue-600/20 border-blue-500 text-blue-400' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}\`}
+              className={`text-[10px] px-2 py-1 rounded-full border ${contentTopic === genre ? 'bg-blue-600/20 border-blue-500 text-blue-400' : 'bg-neutral-800 border-neutral-700 text-neutral-400 hover:bg-neutral-700'}`}
             >
               {genre}
             </button>
