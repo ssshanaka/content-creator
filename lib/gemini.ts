@@ -50,3 +50,50 @@ Each item should conform strictly to the following JSON array structure:
     throw error;
   }
 }
+
+export async function generateSingleItem(apiKey: string, theme: string, cameraMovement: string, songNames: string[] = []): Promise<GeneratedItem> {
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const model = genAI.getGenerativeModel({ 
+    model: 'gemini-3.5-flash-lite',
+    generationConfig: { responseMimeType: "application/json" }
+  });
+
+  const songsList = songNames.length > 0 ? `\nAvailable Songs (incorporate their vibes into the subtext if appropriate):\n${songNames.join(', ')}` : '';
+
+  const prompt = `Generate exactly 1 lofi ambient quote and metadata. 
+Niche / Topic / Music Genre / Visual Theme inspiration: ${theme}.${songsList}
+Requested Camera Movement: ${cameraMovement}.
+Each item should conform strictly to the following JSON array structure:
+[
+  {
+    "id": "generate_unique_string_id",
+    "quote": "Short poetic lofi quote",
+    "subtext": "Slightly longer poetic subtext",
+    "theme": "${theme}",
+    "colors": {
+      "primary": "#hex",
+      "secondary": "#hex",
+      "accent": "#hex",
+      "textGlow": "#hex"
+    },
+    "cameraMovement": "${cameraMovement}",
+    "audioMood": "calm, ambient, etc.",
+    "caption": "Instagram/TikTok caption",
+    "hashtags": ["#lofi", "#ambient"]
+  }
+]
+`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    let jsonString = result.response.text();
+    if (jsonString.startsWith('\`\`\`')) {
+      jsonString = jsonString.replace(/^```(json)?\n?/, '').replace(/\n?```$/, '').trim();
+    }
+    const items: GeneratedItem[] = JSON.parse(jsonString);
+    return items[0];
+  } catch (error) {
+    console.error('Error generating single item:', error);
+    throw error;
+  }
+}

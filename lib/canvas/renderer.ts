@@ -92,7 +92,9 @@ export class CanvasRenderer {
               return true;
             }
           });
+          this.ctx.save();
           this.cachedFunction(safeCtx, this.width, this.height, time, item.colors);
+          this.ctx.restore();
         } catch (e: any) {
           console.error('Error executing generated canvas code:', e);
           this.hasErrored = true;

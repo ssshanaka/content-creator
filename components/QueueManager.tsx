@@ -96,27 +96,38 @@ export function QueueManager() {
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={async () => {
-                      const geminiKey = useStore.getState().geminiKey;
+                      const store = useStore.getState();
+                      const geminiKey = store.geminiKey;
                       if (!geminiKey) return alert("Please enter your Gemini API Key in Configuration.");
                       
                       const btn = document.getElementById(`regen-${item.id}`);
                       if (btn) btn.innerText = 'Regenerating...';
                       
                       try {
+                        const { generateSingleItem } = await import('@/lib/gemini');
+                        const songNames = store.audioFiles.map(f => f.name.replace(/\.[^/.]+$/, ""));
+                        const newItemMeta = await generateSingleItem(geminiKey, item.theme || store.contentTopic, item.cameraMovement || "static", songNames);
+                        
+                        // Keep the original ID so it replaces in place
+                        newItemMeta.id = item.id;
+                        newItemMeta.isEditingSettings = item.isEditingSettings;
+
                         const { generateCanvasCode } = await import('@/lib/geminiVisuals');
-                        const newCode = await generateCanvasCode(geminiKey, item);
-                        useStore.getState().updateQueueItem(item.id, { canvasCode: newCode });
+                        const newCode = await generateCanvasCode(geminiKey, newItemMeta);
+                        newItemMeta.canvasCode = newCode;
+
+                        store.updateQueueItem(item.id, newItemMeta);
                       } catch (e) {
                         console.error("Failed to regenerate", e);
-                        alert("Failed to regenerate visual.");
+                        alert("Failed to regenerate video.");
                       } finally {
-                        if (btn) btn.innerText = 'Regen Visual';
+                        if (btn) btn.innerText = 'Regen Video';
                       }
                     }}
                     id={`regen-${item.id}`}
                     className="flex items-center gap-1.5 text-xs font-medium bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-3 py-1.5 rounded-lg transition-colors border border-neutral-700"
                   >
-                    Regen Visual
+                    Regen Video
                   </button>
                   <button 
                     onClick={() => useStore.getState().setPreviewItemId(item.id)}

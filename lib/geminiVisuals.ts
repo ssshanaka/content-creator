@@ -8,6 +8,8 @@ export async function generateCanvasCode(apiKey: string, item: GeneratedItem): P
   const prompt = `
 You are an expert generative artist using the HTML5 Canvas API.
 Write a pure JavaScript function body that draws an ambient, abstract background matching this quote: "${item.quote}".
+The visual theme and style should be based on this topic/theme: "${item.theme}".
+Simulate this camera movement over time in your drawing logic: "${item.cameraMovement}". (e.g., if "zoom_in", you can apply a subtle ctx.scale() based on timeMs, or ctx.translate() for panning).
 The background should fit a vertical video (9:16).
 Do NOT include text drawing. ONLY background visuals (particles, gradients, waves, shapes, etc).
 The code must be the interior body of a function with these available parameters:
