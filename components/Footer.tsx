@@ -24,7 +24,7 @@ export default function Footer() {
           <h4 className="font-semibold text-white">Resources</h4>
           <ul className="space-y-3">
             <li><Link href="/blog" className="text-sm text-neutral-400 hover:text-white transition-colors">Creator Blog</Link></li>
-            <li><a href="https://github.com/ssshanaka/content-creator" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-400 hover:text-white transition-colors">GitHub Repository</a></li>
+            <li><a href="https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-400 hover:text-white transition-colors">GitHub Repository</a></li>
             <li><a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-400 hover:text-white transition-colors">Get Gemini API Key</a></li>
             <li><Link href="/blog/how-to-generate-music-videos" className="text-sm text-neutral-400 hover:text-white transition-colors">Getting Started Guide</Link></li>
           </ul>

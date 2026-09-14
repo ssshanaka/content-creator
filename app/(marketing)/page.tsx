@@ -113,7 +113,7 @@ export default function HomePage() {
               Start Creating Now (It's Free)
             </Link>
             <a
-              href="https://github.com/ssshanaka/content-creator"
+              href="https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-neutral-900 border border-neutral-700 text-white font-semibold px-8 py-4 rounded-full hover:bg-neutral-800 transition-colors w-full sm:w-auto text-lg"

@@ -23,7 +23,7 @@ export default function AboutPage() {
       "name": "Shanaka"
     },
     "sameAs": [
-      "https://github.com/ssshanaka/content-creator"
+      "https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips"
     ]
   };
 
@@ -124,7 +124,7 @@ export default function AboutPage() {
               Open the Video Generator
             </Link>
             <a
-              href="https://github.com/ssshanaka/content-creator"
+              href="https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-transparent border border-neutral-700 text-white font-bold px-8 py-4 rounded-full hover:bg-neutral-800 transition-colors"

@@ -2,7 +2,7 @@
 
 **VibeClips** is a free, open-source AI video generator designed for music artists and content creators. It generates 9:16 vertical short-form animated videos, complete with procedurally generated ambient visuals perfectly suited for TikTok, Instagram Reels, and YouTube Shorts. 
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fssshanaka%2Fcontent-creator)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fssshanaka%2Fvibeclips-generate-animation-music-videos-short-form-clips)
 
 ## 🌟 Features
 
@@ -23,7 +23,7 @@ You will need a free [Gemini API Key](https://aistudio.google.com/app/apikey) to
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/ssshanaka/content-creator.git vibeclips
+   git clone https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips.git vibeclips
    cd vibeclips
    ```
 
@@ -58,7 +58,7 @@ You will need a free [Gemini API Key](https://aistudio.google.com/app/apikey) to
 ## 🤝 Contributing
 
 Contributions, issues, and feature requests are welcome! 
-Feel free to check the [issues page](https://github.com/ssshanaka/content-creator/issues).
+Feel free to check the [issues page](https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips/issues).
 
 ## 📄 License
 

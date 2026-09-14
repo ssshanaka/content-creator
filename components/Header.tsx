@@ -25,7 +25,7 @@ export default function Header() {
           <Link href="/blog" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">
             Blog
           </Link>
-          <a href="https://github.com/ssshanaka/content-creator" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">
+          <a href="https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips" target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">
             GitHub
           </a>
           <Link
@@ -55,7 +55,7 @@ export default function Header() {
           <Link href="/blog" onClick={closeMenu} className="text-lg font-medium text-neutral-300 hover:text-white transition-colors">
             Blog
           </Link>
-          <a href="https://github.com/ssshanaka/content-creator" onClick={closeMenu} target="_blank" rel="noopener noreferrer" className="text-lg font-medium text-neutral-300 hover:text-white transition-colors">
+          <a href="https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips" onClick={closeMenu} target="_blank" rel="noopener noreferrer" className="text-lg font-medium text-neutral-300 hover:text-white transition-colors">
             GitHub
           </a>
           <Link
