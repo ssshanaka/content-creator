@@ -20,11 +20,25 @@ export const useStore = create<AppState>()(
       setTelegramToken: (token) => set({ telegramToken: token }),
       setTelegramChatId: (id) => set({ telegramChatId: id }),
       addAudioFiles: (files) => set((state) => ({ audioFiles: [...state.audioFiles, ...files] })),
-      setQueue: (items) => set({ queue: items }),
+      removeAudioFile: (index) =>
+        set((state) => ({
+          audioFiles: state.audioFiles.filter((_, i) => i !== index),
+        })),
+      clearAudioFiles: () => set({ audioFiles: [] }),
+      setQueue: (items) => set({ queue: items, previewItemId: items.length > 0 ? items[0].id : null }),
       updateQueueItem: (id, item) =>
         set((state) => ({
           queue: state.queue.map((q) => (q.id === id ? { ...q, ...item } : q)),
         })),
+      removeQueueItem: (id) =>
+        set((state) => {
+          const newQueue = state.queue.filter((q) => q.id !== id);
+          return {
+            queue: newQueue,
+            previewItemId: state.previewItemId === id ? (newQueue[0]?.id || null) : state.previewItemId,
+          };
+        }),
+      clearQueue: () => set({ queue: [], previewItemId: null }),
       setPreviewItemId: (id) => set({ previewItemId: id }),
       setContentTopic: (topic) => set({ contentTopic: topic }),
       setIsGenerating: (isGenerating) => set({ isGenerating }),

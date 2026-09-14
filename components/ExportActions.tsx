@@ -1,33 +1,47 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useStore } from '@/lib/store';
-import { DownloadCloud, PlayCircle, Send, Loader2 } from 'lucide-react';
-import { encodeVideo } from '@/lib/video/encoder';
-import { processAudio } from '@/lib/video/audioProcessor';
-import { exportToZip } from '@/lib/export/zipService';
-import { postToTelegram } from '@/lib/export/telegramBridge';
-import { CanvasRenderer } from '@/lib/canvas/renderer';
+import React from "react";
+import { useStore } from "@/lib/store";
+import { DownloadCloud, PlayCircle, Send, Loader2, Film, CheckCircle2 } from "lucide-react";
+import { encodeVideo } from "@/lib/video/encoder";
+import { processAudio } from "@/lib/video/audioProcessor";
+import { exportToZip } from "@/lib/export/zipService";
+import { postToTelegram } from "@/lib/export/telegramBridge";
+import { CanvasRenderer } from "@/lib/canvas/renderer";
 
 export function ExportActions() {
-  const { isGenerating, setIsGenerating, renderProgress, renderStatus, queue, audioFiles, telegramToken, telegramChatId } = useStore();
+  const {
+    isGenerating,
+    setIsGenerating,
+    renderProgress,
+    renderStatus,
+    queue,
+    audioFiles,
+    telegramToken,
+    telegramChatId,
+  } = useStore();
 
-  const handleExport = async (type: 'zip' | 'telegram') => {
+  const handleExport = async (type: "zip" | "telegram") => {
     setIsGenerating(true);
-    useStore.getState().setRenderProgress(0, 'Initializing Engine...');
-    
+    useStore.getState().setRenderProgress(0, "Initializing Engine...");
+
     try {
       const generatedVideos: { blob: Blob; filename: string }[] = [];
-      let captionsText = '';
+      let captionsText = "";
 
       for (let i = 0; i < queue.length; i++) {
         const item = queue[i];
-        useStore.getState().setRenderProgress(Math.round(((i) / queue.length) * 100), `Rendering ${i + 1}/${queue.length}...`);
-        
+        useStore
+          .getState()
+          .setRenderProgress(
+            Math.round((i / queue.length) * 100),
+            `Rendering video ${i + 1} of ${queue.length}...`
+          );
+
         let audioBuffer;
         let artistName: string | undefined = undefined;
         let songName: string | undefined = undefined;
-        // Generate random duration between 5 and 20 seconds
+        // Generate duration between 5 and 20 seconds
         const randomDuration = Math.floor(Math.random() * 16) + 5;
 
         // Cycle through audio files if any
@@ -36,18 +50,18 @@ export function ExportActions() {
           audioBuffer = await processAudio(file, randomDuration, 1);
           // Parse artist and song name
           const baseName = file.name.replace(/\.[^/.]+$/, "");
-          if (baseName.includes(' - ')) {
-            const parts = baseName.split(' - ');
+          if (baseName.includes(" - ")) {
+            const parts = baseName.split(" - ");
             artistName = parts[0].trim();
-            songName = parts.slice(1).join(' - ').trim();
+            songName = parts.slice(1).join(" - ").trim();
           } else {
             songName = baseName;
           }
         }
 
-        const rendererCanvas = document.createElement('canvas');
+        const rendererCanvas = document.createElement("canvas");
         const renderer = new CanvasRenderer(rendererCanvas);
-        
+
         const blob = await encodeVideo({
           canvas: rendererCanvas,
           canvasWidth: 1080,
@@ -55,91 +69,142 @@ export function ExportActions() {
           fps: 30,
           durationSeconds: randomDuration,
           audioBuffer,
-          renderFrame: (ctx, timeMs) => {
+          renderFrame: (_ctx, timeMs) => {
             renderer.renderFrame(item, timeMs, artistName, songName);
-          }
+          },
         });
 
         const filename = `video_${i + 1}.mp4`;
         generatedVideos.push({ blob, filename });
-        captionsText += `\n\n--- ${filename} ---\n${item.caption}\n${item.hashtags.join(' ')}`;
+        captionsText += `\n\n--- ${filename} ---\n${item.caption}\n${item.hashtags.join(" ")}`;
 
-        if (type === 'telegram') {
+        if (type === "telegram") {
           if (!telegramToken || !telegramChatId) {
             console.warn("Telegram tokens missing, skipping telegram upload.");
           } else {
-             useStore.getState().setRenderProgress(Math.round(((i + 0.5) / queue.length) * 100), `Sending ${i + 1} to Telegram...`);
-             await postToTelegram({
-               botToken: telegramToken,
-               chatId: telegramChatId,
-               videoBlob: blob,
-               caption: item.caption + '\n' + item.hashtags.join(' ')
-             });
+            useStore
+              .getState()
+              .setRenderProgress(
+                Math.round(((i + 0.5) / queue.length) * 100),
+                `Sending video ${i + 1} to Telegram...`
+              );
+            await postToTelegram({
+              botToken: telegramToken,
+              chatId: telegramChatId,
+              videoBlob: blob,
+              caption: item.caption + "\n" + item.hashtags.join(" "),
+            });
           }
         }
       }
 
-      useStore.getState().setRenderProgress(100, 'Finishing up...');
+      useStore.getState().setRenderProgress(100, "Packaging files...");
 
-      if (type === 'zip') {
+      if (type === "zip") {
         await exportToZip({
           videos: generatedVideos,
           captions: captionsText,
-          zipFilename: 'lofi_batch_export.zip'
+          zipFilename: "vibeclips_batch_export.zip",
         });
       }
 
-      useStore.getState().setRenderProgress(100, 'Completed!');
+      useStore.getState().setRenderProgress(100, "Completed successfully!");
     } catch (e) {
       console.error(e);
       alert("Error during export: " + String(e));
     } finally {
       setTimeout(() => {
         setIsGenerating(false);
-        useStore.getState().setRenderProgress(0, 'Idle');
-      }, 2000);
+        useStore.getState().setRenderProgress(0, "Idle");
+      }, 2500);
     }
   };
 
+  const hasQueue = queue.length > 0;
+
   return (
-    <div className="bg-neutral-900 p-5 rounded-xl border border-neutral-800 flex flex-col gap-4 shadow-sm">
-      <h2 className="text-lg font-semibold mb-2 text-neutral-100 flex items-center gap-2">
-        <PlayCircle className="w-5 h-5 text-neutral-400" />
-        Export Engine
-      </h2>
-      
-      {isGenerating && (
-        <div className="flex flex-col gap-2 mb-3 bg-neutral-950 p-3 rounded-lg border border-neutral-800">
-          <div className="flex justify-between text-xs font-medium text-neutral-300">
-            <span className="flex items-center gap-1.5">
-              <Loader2 className="w-3 h-3 animate-spin" />
-              {renderStatus}
-            </span>
-            <span>{renderProgress}%</span>
+    <div className="bg-neutral-900/70 border border-neutral-800 backdrop-blur-sm rounded-2xl p-4 md:p-5 shadow-xl flex flex-col gap-3.5">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-2.5 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <Film className="w-3.5 h-3.5" />
           </div>
-          <div className="w-full bg-neutral-800 rounded-full h-2 overflow-hidden">
-            <div 
-              className="bg-blue-500 h-full transition-all duration-300 ease-out"
+          <div>
+            <h2 className="text-sm font-bold text-white tracking-tight">Export Engine</h2>
+            <p className="text-[11px] text-neutral-400">Step 3 • Client-side GPU rendering</p>
+          </div>
+        </div>
+        <span className="text-[10px] font-semibold tracking-wider text-neutral-400 bg-neutral-800/80 px-2 py-0.5 rounded-full border border-neutral-700/60 uppercase">
+          Render
+        </span>
+      </div>
+
+      {/* Specs & Status */}
+      <div className="bg-neutral-950/80 border border-neutral-800/80 rounded-xl p-3.5 flex flex-col gap-2">
+        <div className="flex items-center justify-between text-xs">
+          <span className="text-neutral-400">Batch Status:</span>
+          {hasQueue ? (
+            <span className="flex items-center gap-1.5 text-emerald-400 font-medium">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              {queue.length} {queue.length === 1 ? "video" : "videos"} ready
+            </span>
+          ) : (
+            <span className="text-neutral-500">Queue is empty</span>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-1.5 pt-1 border-t border-neutral-800/60 text-[10px] text-neutral-400">
+          <span className="bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800">
+            1080×1920 (9:16)
+          </span>
+          <span className="bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800">
+            H.264 MP4
+          </span>
+          <span className="bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800 text-emerald-400/90">
+            Zero Watermark
+          </span>
+        </div>
+      </div>
+
+      {/* Rendering Progress Display */}
+      {isGenerating && (
+        <div className="flex flex-col gap-2.5 bg-neutral-950 border border-blue-500/30 p-4 rounded-xl shadow-inner">
+          <div className="flex justify-between items-center text-xs">
+            <span className="flex items-center gap-2 font-medium text-neutral-200">
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-400" />
+              <span className="truncate max-w-[180px]">{renderStatus}</span>
+            </span>
+            <span className="font-mono text-blue-400 font-bold">{renderProgress}%</span>
+          </div>
+          <div className="w-full bg-neutral-900 rounded-full h-2 overflow-hidden border border-neutral-800">
+            <div
+              className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-full transition-all duration-300 ease-out"
               style={{ width: `${renderProgress}%` }}
             />
           </div>
+          <span className="text-[10px] text-neutral-500 text-center">
+            Rendering natively on your GPU • Do not close this tab
+          </span>
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-3 mt-1">
+      {/* Action Buttons */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         <button
-          onClick={() => handleExport('zip')}
-          disabled={queue.length === 0 || isGenerating}
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 text-white px-3 py-3 rounded-lg transition-colors text-sm font-medium shadow-sm"
+          type="button"
+          onClick={() => handleExport("zip")}
+          disabled={!hasQueue || isGenerating}
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:hover:bg-blue-600 text-white px-3.5 py-3 rounded-xl transition-all text-xs font-semibold shadow-md hover:shadow-blue-500/20 cursor-pointer disabled:cursor-not-allowed"
         >
           <DownloadCloud className="w-4 h-4" />
           Render & ZIP
         </button>
 
         <button
-          onClick={() => handleExport('telegram')}
-          disabled={queue.length === 0 || isGenerating}
-          className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 disabled:opacity-50 disabled:hover:bg-neutral-800 text-neutral-200 px-3 py-3 rounded-lg transition-colors text-sm font-medium border border-neutral-700"
+          type="button"
+          onClick={() => handleExport("telegram")}
+          disabled={!hasQueue || isGenerating}
+          className="w-full flex items-center justify-center gap-2 bg-neutral-950 hover:bg-neutral-800 disabled:opacity-40 disabled:hover:bg-neutral-950 text-neutral-200 px-3.5 py-3 rounded-xl transition-colors text-xs font-medium border border-neutral-800 hover:border-neutral-700 cursor-pointer disabled:cursor-not-allowed"
         >
           <Send className="w-4 h-4" />
           Telegram

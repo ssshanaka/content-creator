@@ -1,57 +1,76 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
-import { useStore } from '@/lib/store';
-import { MonitorPlay } from 'lucide-react';
-import { CanvasRenderer } from '@/lib/canvas/renderer';
+import React, { useRef, useEffect, useState } from "react";
+import { useStore } from "@/lib/store";
+import { 
+  MonitorPlay, 
+  Volume2, 
+  VolumeX, 
+  ChevronLeft, 
+  ChevronRight, 
+  RotateCcw, 
+  Eye, 
+  EyeOff, 
+  Music,
+  Smartphone
+} from "lucide-react";
+import { CanvasRenderer } from "@/lib/canvas/renderer";
 
 export function CanvasPreview() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { queue, previewItemId, audioFiles } = useStore();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   const animationRef = useRef<number>(0);
   const startTimeRef = useRef<number>(0);
+
+  const { queue, previewItemId, setPreviewItemId, audioFiles } = useStore();
+
+  const [isMuted, setIsMuted] = useState(false);
+  const [showSafeZone, setShowSafeZone] = useState(true);
+
+  const currentIndex = queue.findIndex((q) => q.id === previewItemId);
+  const previewItem = currentIndex !== -1 ? queue[currentIndex] : undefined;
+
+  // Handle mute toggle
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const index = queue.findIndex(q => q.id === previewItemId);
-    const previewItem = index !== -1 ? queue[index] : undefined;
-    
     if (!previewItem) {
       // Draw idle state
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      ctx.fillStyle = '#0a0a0a';
+      ctx.fillStyle = "#050505";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = '#525252';
-      ctx.font = 'bold 48px system-ui, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('Select an item to preview', canvas.width / 2, canvas.height / 2);
       return;
     }
 
     let artistName: string | undefined = undefined;
     let songName: string | undefined = undefined;
-    let audio: HTMLAudioElement | null = null;
     let objectUrl: string | null = null;
 
     if (audioFiles.length > 0) {
-      const file = audioFiles[index % audioFiles.length];
+      const file = audioFiles[currentIndex % audioFiles.length];
       const baseName = file.name.replace(/\.[^/.]+$/, "");
-      if (baseName.includes(' - ')) {
-        const parts = baseName.split(' - ');
+      if (baseName.includes(" - ")) {
+        const parts = baseName.split(" - ");
         artistName = parts[0].trim();
-        songName = parts.slice(1).join(' - ').trim();
+        songName = parts.slice(1).join(" - ").trim();
       } else {
         songName = baseName;
       }
-      
+
       objectUrl = URL.createObjectURL(file);
-      audio = new Audio(objectUrl);
+      const audio = new Audio(objectUrl);
       audio.loop = true;
-      audio.play().catch(e => console.warn('Audio playback prevented by browser policy:', e));
+      audio.muted = isMuted;
+      audioRef.current = audio;
+      audio.play().catch((e) => console.warn("Audio playback prevented by browser policy:", e));
     }
 
     try {
@@ -73,33 +92,185 @@ export function CanvasPreview() {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-      if (audio) {
-        audio.pause();
-        audio.src = '';
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.src = "";
+        audioRef.current = null;
       }
       if (objectUrl) {
         URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [previewItemId, queue, audioFiles]);
+  }, [previewItemId, queue, audioFiles, currentIndex, isMuted]);
+
+  const handleRestart = () => {
+    startTimeRef.current = performance.now();
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+    }
+  };
+
+  const hasPrev = currentIndex > 0;
+  const hasNext = currentIndex !== -1 && currentIndex < queue.length - 1;
+
+  const handlePrev = () => {
+    if (hasPrev) {
+      setPreviewItemId(queue[currentIndex - 1].id);
+    }
+  };
+
+  const handleNext = () => {
+    if (hasNext) {
+      setPreviewItemId(queue[currentIndex + 1].id);
+    }
+  };
+
+  const currentAudioName =
+    previewItem && audioFiles.length > 0
+      ? audioFiles[currentIndex % audioFiles.length]?.name.replace(/\.[^/.]+$/, "")
+      : null;
 
   return (
-    <div className="bg-neutral-900 p-5 rounded-xl border border-neutral-800 flex flex-col gap-4 shadow-sm">
-      <div className="flex items-center gap-2 mb-2 text-lg font-semibold text-neutral-100">
-        <MonitorPlay className="w-5 h-5 text-neutral-400" />
-        <h2>Live Preview</h2>
+    <div className="bg-neutral-900/70 border border-neutral-800 backdrop-blur-sm rounded-2xl p-4 md:p-5 shadow-xl flex flex-col h-full min-h-0 justify-between gap-3">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-2.5 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <MonitorPlay className="w-3.5 h-3.5" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-white tracking-tight">Live Studio Preview</h2>
+            <p className="text-[11px] text-neutral-400">9:16 vertical canvas renderer</p>
+          </div>
+        </div>
+        <span className="text-[10px] font-mono text-neutral-400 bg-neutral-800/80 px-2 py-0.5 rounded-full border border-neutral-700/60">
+          1080×1920
+        </span>
       </div>
-      <div className="relative w-full rounded-xl overflow-hidden border-2 border-neutral-800 bg-black shadow-inner">
-        <canvas
-          ref={canvasRef}
-          width={1080}
-          height={1920}
-          className="w-full h-auto aspect-[9/16] object-contain"
-        />
-        
-        {/* Safe zone overlay */}
-        <div className="absolute inset-0 pointer-events-none border border-neutral-700/30 m-4 rounded" />
+
+      {/* Preview Viewport Frame */}
+      <div className="flex-1 min-h-0 flex items-center justify-center my-auto w-full py-1">
+        <div className="relative h-full max-h-[520px] w-auto aspect-[9/16] rounded-2xl overflow-hidden border-2 border-neutral-800 bg-black shadow-2xl flex items-center justify-center">
+          <canvas
+            ref={canvasRef}
+            width={1080}
+            height={1920}
+            className="w-full h-full object-contain"
+          />
+
+        {/* Empty State Overlay */}
+        {!previewItem && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-neutral-950/90 text-neutral-400">
+            <div className="w-12 h-12 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3 text-neutral-500">
+              <Smartphone className="w-6 h-6" />
+            </div>
+            <p className="text-xs font-semibold text-neutral-300 mb-1">
+              No Video Selected
+            </p>
+            <p className="text-[11px] text-neutral-500 leading-relaxed max-w-[200px]">
+              Select any item from the queue to preview procedural animations and audio.
+            </p>
+          </div>
+        )}
+
+        {/* Safe-Zone Guide Overlay */}
+        {previewItem && showSafeZone && (
+          <div className="absolute inset-0 pointer-events-none border border-neutral-600/30 m-3 rounded-xl flex flex-col justify-between p-2">
+            <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded self-start">
+              Top Safe Margin (150px)
+            </div>
+            <div className="flex justify-between items-end">
+              <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded">
+                Caption Safe Zone
+              </div>
+              <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded">
+                Action Bar
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Current Track Pill Overlay */}
+        {previewItem && currentAudioName && (
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 max-w-[85%] pointer-events-none">
+            <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-neutral-700/60 px-2.5 py-1 rounded-full text-[10px] text-neutral-200 truncate">
+              <Music className="w-3 h-3 text-emerald-400 shrink-0 animate-pulse" />
+              <span className="truncate">{currentAudioName}</span>
+            </div>
+          </div>
+        )}
+        </div>
       </div>
+
+      {/* Preview Controls Bar */}
+      {previewItem && (
+        <div className="flex flex-col gap-2 pt-2 border-t border-neutral-800 shrink-0">
+          <div className="flex items-center justify-between">
+            {/* Prev / Next Queue Navigation */}
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={handlePrev}
+                disabled={!hasPrev}
+                className="p-1.5 rounded-lg bg-neutral-950 border border-neutral-800 hover:border-neutral-700 disabled:opacity-30 text-neutral-300 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                title="Previous video"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <span className="text-[11px] font-mono text-neutral-400 px-1.5">
+                {currentIndex + 1} / {queue.length}
+              </span>
+              <button
+                type="button"
+                onClick={handleNext}
+                disabled={!hasNext}
+                className="p-1.5 rounded-lg bg-neutral-950 border border-neutral-800 hover:border-neutral-700 disabled:opacity-30 text-neutral-300 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                title="Next video"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Audio and Guideline Toggles */}
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={handleRestart}
+                className="p-1.5 rounded-lg bg-neutral-950 border border-neutral-800 hover:border-neutral-700 text-neutral-400 hover:text-neutral-200 transition-colors cursor-pointer"
+                title="Restart animation & audio"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowSafeZone(!showSafeZone)}
+                className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                  showSafeZone
+                    ? "bg-blue-600/20 border-blue-500/40 text-blue-400"
+                    : "bg-neutral-950 border-neutral-800 text-neutral-500 hover:text-neutral-300"
+                }`}
+                title={showSafeZone ? "Hide safe-zone guide" : "Show safe-zone guide"}
+              >
+                {showSafeZone ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsMuted(!isMuted)}
+                className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+                  !isMuted
+                    ? "bg-emerald-600/20 border-emerald-500/40 text-emerald-400"
+                    : "bg-neutral-950 border-neutral-800 text-neutral-500 hover:text-neutral-300"
+                }`}
+                title={isMuted ? "Unmute audio" : "Mute audio"}
+              >
+                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -36,8 +36,12 @@ export interface AppState {
   setTelegramToken: (token: string) => void;
   setTelegramChatId: (id: string) => void;
   addAudioFiles: (files: File[]) => void;
+  removeAudioFile: (index: number) => void;
+  clearAudioFiles: () => void;
   setQueue: (items: GeneratedItem[]) => void;
   updateQueueItem: (id: string, item: Partial<GeneratedItem>) => void;
+  removeQueueItem: (id: string) => void;
+  clearQueue: () => void;
   setPreviewItemId: (id: string | null) => void;
   setContentTopic: (topic: string) => void;
   setIsGenerating: (isGenerating: boolean) => void;
