@@ -1,4 +1,4 @@
-export interface BlogPost {
+export interface Article {
   slug: string;
   title: string;
   description: string;
@@ -6,7 +6,7 @@ export interface BlogPost {
   content: string;
 }
 
-export const posts: BlogPost[] = [
+export const articles: Article[] = [
   {
     slug: 'how-to-generate-music-videos',
     title: 'How to Generate 20 Music Videos in 5 Minutes (Without Watermarks)',

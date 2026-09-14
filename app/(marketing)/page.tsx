@@ -1,5 +1,6 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { FAQAccordion } from "@/components/FAQAccordion";
 
 export default function HomePage() {
   const softwareSchema = {
@@ -215,14 +216,7 @@ export default function HomePage() {
           <div className="text-center">
             <h2 className="text-3xl font-bold text-white mb-4">Frequently Asked Questions</h2>
           </div>
-          <div className="space-y-6">
-            {faqSchema.mainEntity.map((faq, idx) => (
-              <div key={idx} className="border-b border-neutral-800 pb-6">
-                <h4 className="text-lg font-medium text-white mb-3">{faq.name}</h4>
-                <p className="text-neutral-400 leading-relaxed">{faq.acceptedAnswer.text}</p>
-              </div>
-            ))}
-          </div>
+          <FAQAccordion faqs={faqSchema.mainEntity} />
         </section>
         
         {/* Final CTA */}

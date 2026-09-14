@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { posts } from './(marketing)/blog/posts';
+import { articles } from './(marketing)/docs/articles';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseDate = new Date('2026-09-01T00:00:00Z');
@@ -18,19 +18,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
-      url: 'https://vibeclips.shanaka.dev/blog',
+      url: 'https://vibeclips.shanaka.dev/docs',
       lastModified: baseDate,
       changeFrequency: 'weekly',
       priority: 0.9,
     }
   ];
 
-  const blogRoutes: MetadataRoute.Sitemap = posts.map((post) => ({
-    url: `https://vibeclips.shanaka.dev/blog/${post.slug}`,
+  const docsRoutes: MetadataRoute.Sitemap = articles.map((post) => ({
+    url: `https://vibeclips.shanaka.dev/docs/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly',
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...blogRoutes];
+  return [...staticRoutes, ...docsRoutes];
 }

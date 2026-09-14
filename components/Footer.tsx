@@ -23,10 +23,10 @@ export default function Footer() {
         <div className="space-y-4">
           <h4 className="font-semibold text-white">Resources</h4>
           <ul className="space-y-3">
-            <li><Link href="/blog" className="text-sm text-neutral-400 hover:text-white transition-colors">Creator Blog</Link></li>
+            <li><Link href="/docs" className="text-sm text-neutral-400 hover:text-white transition-colors">Documentation</Link></li>
             <li><a href="https://github.com/ssshanaka/vibeclips-generate-animation-music-videos-short-form-clips" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-400 hover:text-white transition-colors">GitHub Repository</a></li>
             <li><a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-400 hover:text-white transition-colors">Get Gemini API Key</a></li>
-            <li><Link href="/blog/how-to-generate-music-videos" className="text-sm text-neutral-400 hover:text-white transition-colors">Getting Started Guide</Link></li>
+            <li><Link href="/docs/how-to-generate-music-videos" className="text-sm text-neutral-400 hover:text-white transition-colors">Getting Started Guide</Link></li>
           </ul>
         </div>
       </div>
@@ -36,11 +36,11 @@ export default function Footer() {
           &copy; {new Date().getFullYear()} VibeClips. Open Source under MIT License.
         </p>
         <div className="flex items-center gap-4 text-sm text-neutral-500">
-          <span>Built with Next.js & Gemini AI</span>
+          <span>Built with <a href="https://shanaka.dev" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">&lt;3 for Artists</a></span>
           <span className="hidden md:inline">•</span>
-          <span className="hover:text-neutral-300 cursor-not-allowed" title="Placeholder">Privacy Policy</span>
+          <Link href="/privacy" className="hover:text-neutral-300">Privacy Policy</Link>
           <span className="hidden md:inline">•</span>
-          <span className="hover:text-neutral-300 cursor-not-allowed" title="Placeholder">Terms of Service</span>
+          <Link href="/terms" className="hover:text-neutral-300">Terms of Service</Link>
         </div>
       </div>
     </footer>
