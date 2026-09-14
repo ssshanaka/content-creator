@@ -67,6 +67,27 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             return <p key={idx} className="text-neutral-300 leading-relaxed">{paragraph}</p>;
           })}
         </div>
+
+        {/* Internal Linking: Related Posts */}
+        <hr className="border-neutral-800 my-12" />
+        <div className="space-y-6">
+          <h3 className="text-2xl font-bold text-white">More Resources for Creators</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            {posts
+              .filter((p) => p.slug !== post.slug)
+              .slice(0, 2)
+              .map((related) => (
+                <a
+                  key={related.slug}
+                  href={`/blog/${related.slug}`}
+                  className="block p-6 rounded-2xl bg-neutral-900 border border-neutral-800 hover:border-neutral-700 transition-colors"
+                >
+                  <h4 className="font-bold text-white mb-2">{related.title}</h4>
+                  <p className="text-sm text-neutral-400 line-clamp-2">{related.description}</p>
+                </a>
+              ))}
+          </div>
+        </div>
       </article>
     </>
   );
