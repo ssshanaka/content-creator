@@ -108,7 +108,7 @@ export function ConfigPanel() {
   };
 
   return (
-    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col flex-1 min-h-0 overflow-hidden">
+    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col flex-1 min-h-0 max-h-full overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between pb-2 border-b border-neutral-800 shrink-0 mb-2">
         <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
@@ -249,7 +249,7 @@ export function ConfigPanel() {
         </div>
 
         {audioFiles.length > 0 && (
-          <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto pr-1">
+          <div className="flex flex-col gap-1.5 max-h-36 overflow-y-auto pr-1 custom-scrollbar">
             {audioFiles.map((file, i) => (
               <div
                 key={`${file.name}-${i}`}

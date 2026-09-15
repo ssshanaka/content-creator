@@ -62,7 +62,7 @@ export function QueueManager() {
   };
 
   return (
-    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col h-full min-h-0 gap-3">
+    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col h-full min-h-0 max-h-full overflow-hidden gap-3">
       {/* Header */}
       <div className="flex items-center justify-between pb-2 border-b border-neutral-800 shrink-0">
         <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
