@@ -123,25 +123,20 @@ export function ExportActions() {
   const hasQueue = queue.length > 0;
 
   return (
-    <div className="bg-neutral-900/70 border border-neutral-800 backdrop-blur-sm rounded-2xl p-4 md:p-5 shadow-xl flex flex-col gap-3.5">
+    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3 sm:p-3.5 shadow-sm shrink-0 flex flex-col gap-2.5">
       {/* Header */}
-      <div className="flex items-center justify-between pb-2.5 border-b border-neutral-800 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-            <Film className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-white tracking-tight">Export Engine</h2>
-            <p className="text-[11px] text-neutral-400">Step 3 • Client-side GPU rendering</p>
-          </div>
+      <div className="flex items-center justify-between pb-2 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
+          <PlayCircle className="w-4 h-4 text-neutral-400" />
+          <h2>Export Engine</h2>
         </div>
-        <span className="text-[10px] font-semibold tracking-wider text-neutral-400 bg-neutral-800/80 px-2 py-0.5 rounded-full border border-neutral-700/60 uppercase">
-          Render
+        <span className="text-[10px] text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded border border-neutral-700">
+          1080×1920
         </span>
       </div>
 
       {/* Specs & Status */}
-      <div className="bg-neutral-950/80 border border-neutral-800/80 rounded-xl p-3.5 flex flex-col gap-2">
+      <div className="bg-neutral-950/80 border border-neutral-800/80 rounded-lg p-2.5 flex flex-col gap-1.5">
         <div className="flex items-center justify-between text-xs">
           <span className="text-neutral-400">Batch Status:</span>
           {hasQueue ? (
@@ -153,14 +148,14 @@ export function ExportActions() {
             <span className="text-neutral-500">Queue is empty</span>
           )}
         </div>
-        <div className="flex flex-wrap gap-1.5 pt-1 border-t border-neutral-800/60 text-[10px] text-neutral-400">
-          <span className="bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800">
+        <div className="flex flex-wrap gap-1 pt-1 border-t border-neutral-800/60 text-[9px] text-neutral-400">
+          <span className="bg-neutral-900 px-1.5 py-0.5 rounded border border-neutral-800">
             1080×1920 (9:16)
           </span>
-          <span className="bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800">
+          <span className="bg-neutral-900 px-1.5 py-0.5 rounded border border-neutral-800">
             H.264 MP4
           </span>
-          <span className="bg-neutral-900 px-2 py-0.5 rounded border border-neutral-800 text-emerald-400/90">
+          <span className="bg-neutral-900 px-1.5 py-0.5 rounded border border-neutral-800 text-emerald-400/90">
             Zero Watermark
           </span>
         </div>
@@ -168,35 +163,35 @@ export function ExportActions() {
 
       {/* Rendering Progress Display */}
       {isGenerating && (
-        <div className="flex flex-col gap-2.5 bg-neutral-950 border border-blue-500/30 p-4 rounded-xl shadow-inner">
+        <div className="flex flex-col gap-2 bg-neutral-950 border border-blue-500/30 p-3 rounded-lg shadow-inner">
           <div className="flex justify-between items-center text-xs">
-            <span className="flex items-center gap-2 font-medium text-neutral-200">
-              <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-400" />
-              <span className="truncate max-w-[180px]">{renderStatus}</span>
+            <span className="flex items-center gap-1.5 font-medium text-neutral-200 truncate">
+              <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-400 shrink-0" />
+              <span className="truncate">{renderStatus}</span>
             </span>
-            <span className="font-mono text-blue-400 font-bold">{renderProgress}%</span>
+            <span className="font-mono text-blue-400 font-bold text-xs">{renderProgress}%</span>
           </div>
-          <div className="w-full bg-neutral-900 rounded-full h-2 overflow-hidden border border-neutral-800">
+          <div className="w-full bg-neutral-900 rounded-full h-1.5 overflow-hidden border border-neutral-800">
             <div
               className="bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 h-full transition-all duration-300 ease-out"
               style={{ width: `${renderProgress}%` }}
             />
           </div>
-          <span className="text-[10px] text-neutral-500 text-center">
-            Rendering natively on your GPU • Do not close this tab
+          <span className="text-[9px] text-neutral-500 text-center">
+            Rendering natively on GPU • Keep tab open
           </span>
         </div>
       )}
 
       {/* Action Buttons */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+      <div className="grid grid-cols-2 gap-2">
         <button
           type="button"
           onClick={() => handleExport("zip")}
           disabled={!hasQueue || isGenerating}
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:hover:bg-blue-600 text-white px-3.5 py-3 rounded-xl transition-all text-xs font-semibold shadow-md hover:shadow-blue-500/20 cursor-pointer disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-40 disabled:hover:bg-blue-600 text-white px-2.5 py-2 rounded-lg transition-all text-xs font-semibold shadow hover:shadow-blue-500/20 cursor-pointer disabled:cursor-not-allowed"
         >
-          <DownloadCloud className="w-4 h-4" />
+          <DownloadCloud className="w-3.5 h-3.5" />
           Render & ZIP
         </button>
 
@@ -204,9 +199,9 @@ export function ExportActions() {
           type="button"
           onClick={() => handleExport("telegram")}
           disabled={!hasQueue || isGenerating}
-          className="w-full flex items-center justify-center gap-2 bg-neutral-950 hover:bg-neutral-800 disabled:opacity-40 disabled:hover:bg-neutral-950 text-neutral-200 px-3.5 py-3 rounded-xl transition-colors text-xs font-medium border border-neutral-800 hover:border-neutral-700 cursor-pointer disabled:cursor-not-allowed"
+          className="w-full flex items-center justify-center gap-1.5 bg-neutral-950 hover:bg-neutral-800 disabled:opacity-40 disabled:hover:bg-neutral-950 text-neutral-200 px-2.5 py-2 rounded-lg transition-colors text-xs font-medium border border-neutral-800 hover:border-neutral-700 cursor-pointer disabled:cursor-not-allowed"
         >
-          <Send className="w-4 h-4" />
+          <Send className="w-3.5 h-3.5" />
           Telegram
         </button>
       </div>

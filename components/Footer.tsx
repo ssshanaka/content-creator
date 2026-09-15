@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-neutral-950 border-t border-neutral-800 pt-16 pb-8">
+    <footer className="bg-neutral-950/80 backdrop-blur-md border-t border-neutral-800/80 pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
         <div className="space-y-4 md:col-span-2">
           <h3 className="text-xl font-bold text-white tracking-tight">VibeClips</h3>

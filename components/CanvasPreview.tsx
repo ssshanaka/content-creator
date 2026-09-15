@@ -45,8 +45,13 @@ export function CanvasPreview() {
       // Draw idle state
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
-      ctx.fillStyle = "#050505";
+      ctx.fillStyle = "#0a0a0a";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#525252";
+      ctx.font = "bold 44px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("Select an item to preview", canvas.width / 2, canvas.height / 2);
       return;
     }
 
@@ -131,74 +136,54 @@ export function CanvasPreview() {
       : null;
 
   return (
-    <div className="bg-neutral-900/70 border border-neutral-800 backdrop-blur-sm rounded-2xl p-4 md:p-5 shadow-xl flex flex-col h-full min-h-0 justify-between gap-3">
+    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col h-full min-h-0 justify-between gap-2.5">
       {/* Header */}
-      <div className="flex items-center justify-between pb-2.5 border-b border-neutral-800 shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-            <MonitorPlay className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-white tracking-tight">Live Studio Preview</h2>
-            <p className="text-[11px] text-neutral-400">9:16 vertical canvas renderer</p>
-          </div>
+      <div className="flex items-center justify-between pb-2 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
+          <MonitorPlay className="w-4 h-4 text-neutral-400" />
+          <h2>Live Preview</h2>
         </div>
-        <span className="text-[10px] font-mono text-neutral-400 bg-neutral-800/80 px-2 py-0.5 rounded-full border border-neutral-700/60">
+        <span className="text-[10px] font-mono text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded border border-neutral-700">
           1080×1920
         </span>
       </div>
 
       {/* Preview Viewport Frame */}
-      <div className="flex-1 min-h-0 flex items-center justify-center my-auto w-full py-1">
-        <div className="relative h-full max-h-[520px] w-auto aspect-[9/16] rounded-2xl overflow-hidden border-2 border-neutral-800 bg-black shadow-2xl flex items-center justify-center">
+      <div className="flex-1 min-h-0 flex items-center justify-center w-full p-1 overflow-hidden">
+        <div className="relative aspect-[9/16] h-full max-h-full w-auto max-w-full rounded-2xl overflow-hidden border-2 border-neutral-800 bg-black shadow-2xl flex items-center justify-center">
           <canvas
             ref={canvasRef}
             width={1080}
             height={1920}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain pointer-events-none"
           />
 
-        {/* Empty State Overlay */}
-        {!previewItem && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center bg-neutral-950/90 text-neutral-400">
-            <div className="w-12 h-12 rounded-full bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-3 text-neutral-500">
-              <Smartphone className="w-6 h-6" />
-            </div>
-            <p className="text-xs font-semibold text-neutral-300 mb-1">
-              No Video Selected
-            </p>
-            <p className="text-[11px] text-neutral-500 leading-relaxed max-w-[200px]">
-              Select any item from the queue to preview procedural animations and audio.
-            </p>
-          </div>
-        )}
-
-        {/* Safe-Zone Guide Overlay */}
-        {previewItem && showSafeZone && (
-          <div className="absolute inset-0 pointer-events-none border border-neutral-600/30 m-3 rounded-xl flex flex-col justify-between p-2">
-            <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded self-start">
-              Top Safe Margin (150px)
-            </div>
-            <div className="flex justify-between items-end">
-              <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded">
-                Caption Safe Zone
+          {/* Safe-Zone Guide Overlay */}
+          {previewItem && showSafeZone && (
+            <div className="absolute inset-0 pointer-events-none border border-neutral-600/30 m-3 rounded-xl flex flex-col justify-between p-2">
+              <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded self-start">
+                Top Safe Margin (150px)
               </div>
-              <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded">
-                Action Bar
+              <div className="flex justify-between items-end">
+                <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded">
+                  Caption Safe Zone
+                </div>
+                <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded">
+                  Action Bar
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Current Track Pill Overlay */}
-        {previewItem && currentAudioName && (
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 max-w-[85%] pointer-events-none">
-            <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-neutral-700/60 px-2.5 py-1 rounded-full text-[10px] text-neutral-200 truncate">
-              <Music className="w-3 h-3 text-emerald-400 shrink-0 animate-pulse" />
-              <span className="truncate">{currentAudioName}</span>
+          {/* Current Track Pill Overlay */}
+          {previewItem && currentAudioName && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 max-w-[85%] pointer-events-none">
+              <div className="flex items-center gap-1.5 bg-black/70 backdrop-blur-md border border-neutral-700/60 px-2.5 py-1 rounded-full text-[10px] text-neutral-200 truncate">
+                <Music className="w-3 h-3 text-emerald-400 shrink-0 animate-pulse" />
+                <span className="truncate">{currentAudioName}</span>
+              </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </div>
 

@@ -62,21 +62,16 @@ export function QueueManager() {
   };
 
   return (
-    <div className="bg-neutral-900/70 border border-neutral-800 backdrop-blur-sm rounded-2xl p-5 md:p-6 shadow-xl flex flex-col gap-5 h-full">
+    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col h-full min-h-0 gap-3">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-neutral-800">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-            <ListVideo className="w-4 h-4" />
-          </div>
-          <div>
-            <h2 className="text-base font-bold text-white tracking-tight">Queue Manager</h2>
-            <p className="text-xs text-neutral-400">Step 2 • Review & edit video concepts</p>
-          </div>
+      <div className="flex items-center justify-between pb-2 border-b border-neutral-800 shrink-0">
+        <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
+          <ListVideo className="w-4 h-4 text-neutral-400" />
+          <h2>Queue Manager</h2>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold tracking-wider text-neutral-300 bg-neutral-800 px-2.5 py-1 rounded-full border border-neutral-700">
-            {queue.length} {queue.length === 1 ? "Item" : "Items"}
+          <span className="text-[11px] font-semibold tracking-wider text-neutral-400 bg-neutral-800 px-2.5 py-0.5 rounded-full border border-neutral-700">
+            {queue.length} items
           </span>
           {queue.length > 0 && (
             <button
@@ -86,7 +81,7 @@ export function QueueManager() {
                   clearQueue();
                 }
               }}
-              className="text-[11px] text-neutral-500 hover:text-red-400 p-1.5 transition-colors cursor-pointer rounded-lg hover:bg-neutral-800"
+              className="text-[11px] text-neutral-500 hover:text-red-400 p-1 transition-colors cursor-pointer rounded hover:bg-neutral-800"
               title="Clear queue"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -98,28 +93,10 @@ export function QueueManager() {
       {/* Queue Items List */}
       <div className="flex-1 min-h-0 overflow-y-auto pr-1.5 space-y-3 custom-scrollbar">
         {queue.length === 0 ? (
-          <div className="text-center text-neutral-500 py-8 px-4 flex flex-col items-center justify-center min-h-[320px] h-full border border-dashed border-neutral-800 rounded-xl bg-neutral-950/40">
-            <div className="w-12 h-12 rounded-2xl bg-neutral-900 border border-neutral-800 flex items-center justify-center mb-4 text-neutral-400">
-              <Sparkles className="w-6 h-6 opacity-60" />
-            </div>
-            <h3 className="text-sm font-semibold text-neutral-200 mb-1">Queue is empty</h3>
-            <p className="text-xs text-neutral-400 max-w-sm mb-6 leading-relaxed">
-              Enter your Gemini API key and add music tracks in Studio Setup, then click &quot;Generate 20 Video Concepts&quot;.
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full max-w-md text-left">
-              <div className="bg-neutral-900/60 border border-neutral-800 p-3 rounded-lg text-[11px]">
-                <span className="text-blue-400 font-bold block mb-0.5">1. Add Audio</span>
-                <span className="text-neutral-500">Upload MP3/WAV tracks to pair.</span>
-              </div>
-              <div className="bg-neutral-900/60 border border-neutral-800 p-3 rounded-lg text-[11px]">
-                <span className="text-purple-400 font-bold block mb-0.5">2. AI Scripting</span>
-                <span className="text-neutral-500">Procedural canvas animations.</span>
-              </div>
-              <div className="bg-neutral-900/60 border border-neutral-800 p-3 rounded-lg text-[11px]">
-                <span className="text-emerald-400 font-bold block mb-0.5">3. Fast Export</span>
-                <span className="text-neutral-500">Render 9:16 vertical videos.</span>
-              </div>
-            </div>
+          <div className="text-center text-neutral-500 py-16 flex flex-col items-center justify-center h-full border-2 border-dashed border-neutral-800/80 rounded-xl bg-neutral-950/50">
+            <ListVideo className="w-12 h-12 mb-3 opacity-20" />
+            <p className="font-semibold text-neutral-300 text-sm">Queue is empty</p>
+            <p className="text-xs mt-1 text-neutral-500">Add content to generate items.</p>
           </div>
         ) : (
           queue.map((item, index) => {
