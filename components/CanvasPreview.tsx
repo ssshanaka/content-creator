@@ -136,7 +136,7 @@ export function CanvasPreview() {
       : null;
 
   return (
-    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3.5 sm:p-4 shadow-sm flex flex-col h-full min-h-0 max-h-full overflow-hidden justify-between gap-2.5">
+    <div className="bg-neutral-900/80 border border-neutral-800 rounded-xl p-3 sm:p-3.5 shadow-sm flex flex-col h-full min-h-0 max-h-full overflow-hidden justify-between gap-2.5 w-full max-w-[360px] mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between pb-2 border-b border-neutral-800 shrink-0">
         <div className="flex items-center gap-2 text-sm font-semibold text-neutral-100">
@@ -149,7 +149,7 @@ export function CanvasPreview() {
       </div>
 
       {/* Preview Viewport Frame */}
-      <div className="flex-1 min-h-0 flex items-center justify-center w-full p-1 overflow-hidden">
+      <div className="flex-1 min-h-0 flex items-center justify-center w-full p-0.5 sm:p-1 overflow-hidden">
         <div className="relative aspect-[9/16] h-full max-h-full w-auto max-w-full rounded-2xl overflow-hidden border-2 border-neutral-800 bg-black shadow-2xl flex items-center justify-center">
           <canvas
             ref={canvasRef}
@@ -160,7 +160,7 @@ export function CanvasPreview() {
 
           {/* Safe-Zone Guide Overlay */}
           {previewItem && showSafeZone && (
-            <div className="absolute inset-0 pointer-events-none border border-neutral-600/30 m-3 rounded-xl flex flex-col justify-between p-2">
+            <div className="absolute inset-0 pointer-events-none border border-neutral-600/30 m-2.5 sm:m-3 rounded-xl flex flex-col justify-between p-2">
               <div className="text-[9px] font-mono text-neutral-500 bg-black/60 px-1.5 py-0.5 rounded self-start">
                 Top Safe Margin (150px)
               </div>
