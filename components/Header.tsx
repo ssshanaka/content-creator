@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 export default function Header() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -19,6 +22,11 @@ export default function Header() {
         
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6">
+          {!isHome && (
+            <Link href="/" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">
+              Home
+            </Link>
+          )}
           <Link href="/about" className="text-sm font-medium text-neutral-300 hover:text-white transition-colors">
             About
           </Link>
@@ -49,6 +57,11 @@ export default function Header() {
       {/* Mobile Nav */}
       {isMobileMenuOpen && (
         <nav className="md:hidden bg-neutral-950 border-b border-neutral-800 px-6 py-4 flex flex-col gap-4 shadow-xl">
+          {!isHome && (
+            <Link href="/" onClick={closeMenu} className="text-lg font-medium text-neutral-300 hover:text-white transition-colors">
+              Home
+            </Link>
+          )}
           <Link href="/about" onClick={closeMenu} className="text-lg font-medium text-neutral-300 hover:text-white transition-colors">
             About
           </Link>

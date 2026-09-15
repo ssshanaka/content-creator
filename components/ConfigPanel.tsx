@@ -49,9 +49,7 @@ export function ConfigPanel() {
   const [generationProgress, setGenerationProgress] = useState("");
   const [showApiKey, setShowApiKey] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [showTelegramSettings, setShowTelegramSettings] = useState(
-    Boolean(telegramToken || telegramChatId)
-  );
+  const [showTelegramSettings, setShowTelegramSettings] = useState(true);
 
   const handleGenerateQuotes = async () => {
     if (!geminiKey) return alert("Please enter a Gemini API Key to generate content.");
@@ -302,14 +300,14 @@ export function ConfigPanel() {
         </button>
 
         {showTelegramSettings && (
-          <div className="flex flex-col gap-3 mt-3 pt-2">
+          <div className="flex flex-col gap-2 mt-2 pt-1">
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-medium text-neutral-400">
                 Telegram Bot Token
               </label>
               <input
                 type="password"
-                className="bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-neutral-200 focus:outline-none focus:border-blue-500 font-mono transition-colors"
+                className="bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-neutral-200 focus:outline-none focus:border-blue-500 font-mono transition-colors"
                 value={telegramToken}
                 onChange={(e) => setTelegramToken(e.target.value)}
                 placeholder="123456:ABC-DEF..."
@@ -321,7 +319,7 @@ export function ConfigPanel() {
               </label>
               <input
                 type="text"
-                className="bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 text-xs text-neutral-200 focus:outline-none focus:border-blue-500 font-mono transition-colors"
+                className="bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-1.5 text-xs text-neutral-200 focus:outline-none focus:border-blue-500 font-mono transition-colors"
                 value={telegramChatId}
                 onChange={(e) => setTelegramChatId(e.target.value)}
                 placeholder="-1001234567890"
